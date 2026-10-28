@@ -1,4 +1,5 @@
-import { BackHeader, Stepper, Dots } from '../../components/ui.jsx';
+import { BackHeader, Stepper, Dots, Photo } from '../../components/ui.jsx';
+import { IMG } from '../../logic/data.js';
 
 export function Checkout({ vm, app }) {
   const c = vm.co;
@@ -7,10 +8,12 @@ export function Checkout({ vm, app }) {
     <div className="col g20 pad">
       <BackHeader app={app} label="// checkout" />
       <h1 className="dk" style={{ fontSize: 48 }}>CONFIRMÁ EL TURNO</h1>
-      <div className="cd col g6" style={{ padding: 16 }}>
-        <span className="idx">// tu turno</span>
-        <p className="ds" style={{ fontSize: 24 }}>{c.cuando}</p>
-        <p className="ley">{c.donde}</p>
+      <div className="cd col">
+        <Photo src={c.foto} h={92} veil="bottom" alt=""><span className="idx" style={{ color: 'var(--ink)' }}>// tu turno</span></Photo>
+        <div className="col g6" style={{ padding: 16 }}>
+          <p className="ds" style={{ fontSize: 24 }}>{c.cuando}</p>
+          <p className="ley">{c.donde}</p>
+        </div>
       </div>
       <div className="rb">
         <div className="col g2">
@@ -32,6 +35,7 @@ export function Checkout({ vm, app }) {
         <p className="ley" style={{ fontSize: 13 }}>{c.splitTxt}</p>
       </div>
       <div className="rb base"><span className="sec">pagás ahora</span><span className="dk" style={{ fontSize: 38 }}>{c.ahora}</span></div>
+      <p className="ley" style={{ fontSize: 12 }}>lo que ves es lo que pagás: el cargo por servicio ya está sumado. el pago lo procesa Mercado Pago y tu tarjeta no queda guardada en la app.</p>
       <button className="btn" onClick={c.pagar}>pagar con mercado pago</button>
       <p className="idx center">pago simulado para el prototipo</p>
     </div>
@@ -42,7 +46,8 @@ export function Confirmado({ vm }) {
   const c = vm.cf;
   if (!c) return null;
   return (
-    <div className="col g22 pad" style={{ paddingTop: 12 }}>
+    <div className="col g22 pad">
+      <Photo src={IMG('festejo')} h={210} veil="bottom" style={{ margin: 'calc(-1 * var(--top)) -20px 0' }} alt="jugadores abrazados festejando un gol" />
       <div className="hdr rb">
         <span className="idx">// reserva confirmada</span>
         <svg width="34" height="34" viewBox="0 0 36 36" fill="none" stroke="#bce04b" strokeWidth="1.6" aria-hidden="true">

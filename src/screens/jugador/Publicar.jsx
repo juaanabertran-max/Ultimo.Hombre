@@ -17,6 +17,11 @@ export default function Publicar({ vm, app }) {
       <div><span className="lbl">¿en qué puesto?</span><div className="wrap"><Chips items={p.pos} /></div></div>
       <div><span className="lbl">nivel que buscás</span><div className="wrap"><Chips items={p.nivel} /></div></div>
       <div>
+        <span className="lbl">categoría del partido</span>
+        <div className="wrap"><Chips items={p.cat} /></div>
+        <p className="ley" style={{ fontSize: 12, marginTop: 8 }}>es una categoría del partido, no un dato de quien se suma.</p>
+      </div>
+      <div>
         <span className="lbl">tipo de partido</span>
         <Seg label="tipo de partido" value={p.tipo} onChange={p.setTipo} options={[{ id: 'propio', label: 'partido propio' }, { id: 'torneo', label: 'refuerzo torneo' }]} />
       </div>
@@ -36,6 +41,11 @@ export default function Publicar({ vm, app }) {
       <div>
         <label className="lbl" htmlFor="uh-msg">mensaje <span className="ley" style={{ fontSize: 12 }}>(opcional)</span></label>
         <textarea id="uh-msg" className="inp" rows={3} value={p.msg} onChange={p.setMsg} placeholder="ej: somos de toque. no vengas a gambetear a los once." />
+      </div>
+      <div>
+        <span className="lbl">cuando alguien se suma</span>
+        <Seg label="cuando alguien se suma" value={p.revisar} onChange={p.setRevisar} options={[{ id: true, label: 'revisar a cada uno' }, { id: false, label: 'aceptar automático' }]} />
+        <p className="ley" style={{ fontSize: 12, marginTop: 8 }}>{p.revisar ? 'ves alias, posición, nivel y reputación, y decidís. la foto y el teléfono aparecen cuando lo confirmás.' : 'quien se suma queda confirmado al toque.'}</p>
       </div>
       <div className="cd rb" style={{ padding: '14px 16px' }}>
         <span className="ley" style={{ fontSize: 13 }}>cada uno que se sume paga su parte desde la app</span>

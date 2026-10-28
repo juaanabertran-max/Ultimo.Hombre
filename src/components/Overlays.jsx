@@ -10,6 +10,8 @@ export function PaySheet({ p }) {
         </div>
         <p className="ley">{p.concepto}</p>
         <p className="dk" style={{ fontSize: 54 }}>{p.monto}</p>
+        <p className="ley" style={{ fontSize: 12 }}>incluye el cargo por servicio. el pago lo procesa Mercado Pago: tu tarjeta no queda guardada en último hombre.</p>
+        {p.nota && <p className="ley ink" style={{ fontSize: 13 }}>{p.nota}</p>}
         <div className="cd rb" style={{ padding: '14px 16px', background: 'var(--surface)' }}>
           <span className="bx" style={{ fontSize: 14 }}>dinero en cuenta</span>
           <span className="idx">medio de pago de prueba</span>
@@ -22,25 +24,6 @@ export function PaySheet({ p }) {
         ) : (
           <button className="btn" onClick={p.go}>pagar {p.monto}</button>
         )}
-      </div>
-    </div>
-  );
-}
-
-export function BajaSheet({ m }) {
-  return (
-    <div className="overlay">
-      <div className="sheet up" role="dialog" aria-modal="true" aria-label="aviso de asistencia" style={{ gap: 16, paddingTop: 22 }}>
-        <span className="idx">// ojo con la asistencia</span>
-        <h2 className="dk" style={{ fontSize: 40 }}>¿TE BAJÁS?</h2>
-        <p className="ley ink">
-          si cancelás a último momento o no vas, baja tu asistencia. hoy tenés <span className="bx">{m.asis}</span>;
-          si te bajás ahora quedás en <span className="bx" style={{ color: 'var(--accent)' }}>{m.post}</span>.
-        </p>
-        <p className="ley" style={{ fontSize: 13 }}>los organizadores la ven antes de sumarte. avisar con tiempo cuenta.</p>
-        {m.esOrg && <p className="ley" style={{ fontSize: 13 }}>sos el organizador: la cancha sigue reservada y los chicos se enteran al toque.</p>}
-        <button className="btn" onClick={m.quedo}>me quedo, voy</button>
-        <button className="btn s" onClick={m.bajo}>me bajo igual</button>
       </div>
     </div>
   );
@@ -68,9 +51,8 @@ export function CeldaSheet({ c }) {
         {c.est === 'app' && (
           <div className="col">
             <p className="ds" style={{ fontSize: 24, paddingBottom: 6 }}>reservado por app</p>
-            <div className="row ln"><span className="ley">organiza</span><span className="bx" style={{ fontSize: 14 }}>{c.org}</span></div>
+            <div className="row ln"><span className="ley">organiza (alias)</span><span className="bx" style={{ fontSize: 14 }}>{c.org}</span></div>
             <div className="row ln"><span className="ley">teléfono</span><span style={{ fontSize: 14 }}>{c.tel}</span></div>
-            <div className="row ln"><span className="ley">asistencia</span><span className="bx" style={{ fontSize: 14, color: 'var(--accent)' }}>{c.asis}</span></div>
             <div className="row ln"><span className="ley">jugadores</span><span style={{ fontSize: 14 }}>{c.jug}</span></div>
             <div className="row ln"><span className="ley">pago</span><span style={{ fontSize: 14 }}>{c.pago}</span></div>
             <p className="ley" style={{ fontSize: 12, paddingTop: 8 }}>los datos de quien reservó quedan en la plataforma: si no viene, lo marcás desde reservas.</p>

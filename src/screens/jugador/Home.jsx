@@ -1,14 +1,16 @@
-import { Isologo, Barras, Marks, Dots, Icon } from '../../components/ui.jsx';
+import { Isologo, Barras, Marks, Dots, Icon, Photo } from '../../components/ui.jsx';
+import { IMG } from '../../logic/data.js';
 
 export function CardFeedMini({ f }) {
   return (
-    <button className={'tile rb' + (f.hi ? ' hi' : '')} style={{ padding: '14px 16px' }} onClick={f.sumarme}>
-      <span className="col g4 min0">
+    <button className={'tile' + (f.hi ? ' hi' : '')} style={{ padding: 0, display: 'flex', alignItems: 'stretch' }} onClick={f.sumarme}>
+      <span className="photo" style={{ width: 96, minHeight: 104 }} aria-hidden="true"><img src={f.foto} alt="" loading="lazy" /></span>
+      <span className="col g4 min0" style={{ padding: '12px 14px', flex: 1 }}>
         <span className="sec">{f.busca}</span>
         <span className="bx" style={{ fontSize: 14 }}>{f.cuando}</span>
-        <span className="ley" style={{ fontSize: 13 }}>{f.donde}</span>
+        <span className="ley" style={{ fontSize: 12, lineHeight: '17px' }}>{f.donde} · {f.cat}</span>
+        <span className="rb" style={{ paddingTop: 2 }}><span className="idx">{f.share} c/u</span><Icon name="next" size={18} /></span>
       </span>
-      <span className="end g2"><span className="ds n" style={{ fontSize: 20 }}>{f.share}</span><span className="idx">c/u</span></span>
     </button>
   );
 }
@@ -28,39 +30,59 @@ export default function Home({ vm }) {
       </div>
 
       <div className="col g8">
-        <h1 className="dk" style={{ fontSize: 56 }}>HOLA, {h.nombreUp}</h1>
+        <h1 className="dk" style={{ fontSize: 56 }}>HOLA, {h.aliasUp}</h1>
         <p className="ley">nunca te quedes sin jugar.</p>
       </div>
 
       {p ? (
-        <section className="cd hi col g14" style={{ padding: 18 }} aria-label="próximo partido">
-          <div className="rb"><span className="idx">// próximo partido</span><span className={'pl ' + p.rolCls}>{p.rol}</span></div>
-          <div className="col g6">
-            <p className="ds" style={{ fontSize: 27 }}>{p.cuando}</p>
-            <p className="ley">{p.donde}</p>
-          </div>
-          <Dots dots={p.dots} />
-          <div className="rb">
-            <span style={{ fontSize: 15 }}><span className="bx">{p.conf}</span> confirmados</span>
-            {p.faltaGente && <span className="pl f">{p.faltanTxt}</span>}
-            {p.completo && <span className="pl l">equipo completo</span>}
-          </div>
-          {p.showPublicar && (
-            <div className="col g12">
-              <p className="ley ink">{p.pregunta}</p>
-              <button className="btn" onClick={p.publicar}>{p.cta}</button>
+        <section className="cd hi col" aria-label="próximo partido">
+          <Photo src={p.foto} h={96} veil="bottom" alt="">
+            <div className="rb"><span className="idx" style={{ color: 'var(--ink)' }}>// próximo partido</span><span className={'pl ' + p.rolCls}>{p.rol}</span></div>
+          </Photo>
+          <div className="col g14" style={{ padding: 18 }}>
+            <div className="col g6">
+              <p className="ds" style={{ fontSize: 27 }}>{p.cuando}</p>
+              <p className="ley">{p.donde}{p.cat ? ' · ' + p.cat : ''}</p>
             </div>
-          )}
-          {p.publicado && <p className="sec" style={{ fontSize: 13 }}>{p.pubTxt}</p>}
-          <button className="btn s" onClick={p.ver}>ver partido</button>
+            <Dots dots={p.dots} />
+            <div className="rb">
+              <span style={{ fontSize: 15 }}><span className="bx">{p.conf}</span> confirmados</span>
+              {p.faltaGente && <span className="pl f">{p.faltanTxt}</span>}
+              {p.completo && <span className="pl l">equipo completo</span>}
+            </div>
+            {p.nPend > 0 && <p className="sec" style={{ fontSize: 13 }}>{p.nPend === 1 ? 'alguien se sumó y espera que lo confirmes' : `${p.nPend} esperan que los confirmes`}</p>}
+            {p.esperando && <p className="ley ink" style={{ fontSize: 13 }}>{p.esperaTxt}</p>}
+            {p.showPublicar && (
+              <div className="col g12">
+                <p className="ley ink">{p.pregunta}</p>
+                <button className="btn" onClick={p.publicar}>{p.cta}</button>
+              </div>
+            )}
+            {p.publicado && <p className="sec" style={{ fontSize: 13 }}>{p.pubTxt}</p>}
+            <button className="btn s" onClick={p.ver}>ver partido</button>
+          </div>
         </section>
       ) : (
-        <section className="cd col g12" style={{ padding: 20 }}>
-          <span className="idx">// próximo partido</span>
-          <p className="ds" style={{ fontSize: 24 }}>nada a la vista.</p>
-          <p className="ley">el jueves no se juega solo. reservá una cancha o sumate a un partido.</p>
-          <button className="btn" onClick={h.reservar}>reservar cancha</button>
+        <section className="cd col" aria-label="próximo partido">
+          <Photo src={IMG('arco')} h={120} veil="bottom" alt="arco vacío en una cancha de césped sintético">
+            <span className="idx" style={{ color: 'var(--ink)' }}>// próximo partido</span>
+          </Photo>
+          <div className="col g12" style={{ padding: 18 }}>
+            <p className="ds" style={{ fontSize: 24 }}>el arco te está esperando.</p>
+            <p className="ley">todavía no tenés partidos. reservá una cancha o sumate a uno cerca: hay gente que te necesita.</p>
+            <button className="btn" onClick={h.reservar}>reservar cancha</button>
+          </div>
         </section>
+      )}
+
+      {h.calif && (
+        <button className="tile hi rb g12" style={{ padding: 16 }} onClick={h.calif.ir}>
+          <span className="col g4 min0">
+            <span className="sec">¿cómo estuvo el {h.calif.partido.split(' · ')[0]}?</span>
+            <span className="ley ink" style={{ fontSize: 13 }}>calificá la conducta de tus compañeros. es a ciegas y tarda un minuto.</span>
+          </span>
+          <Icon name="next" size={22} />
+        </button>
       )}
 
       <div className="grid3">

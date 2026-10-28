@@ -1,4 +1,5 @@
-import { BackHeader, Chips, Seg, Icon } from '../../components/ui.jsx';
+import { useRef } from 'react';
+import { BackHeader, Chips, Seg, Icon, Photo } from '../../components/ui.jsx';
 
 function Filtros({ r }) {
   return (
@@ -20,11 +21,10 @@ export function Complejos({ vm, app }) {
       <h2 className="sec">{r.titulo}</h2>
       {r.lista.map((x) => (
         <button key={x.id} className="tile col" style={{ padding: 0, alignItems: 'stretch' }} onClick={x.open}>
-          <span className="ph" style={{ height: 92, display: 'flex', alignItems: 'flex-end', padding: '10px 14px' }} aria-hidden="true">
-            <span className="idx">// foto · {x.nombre}</span>
-          </span>
-          <span className="col g8" style={{ padding: '14px 16px 16px' }}>
-            <span className="rb base"><span className="ds" style={{ fontSize: 23 }}>{x.nombre}</span><span className="idx">{x.km}</span></span>
+          <Photo src={x.foto} h={130} veil="bottom" alt="">
+            <span className="rb base"><span className="ds" style={{ fontSize: 24 }}>{x.nombre}</span><span className="idx" style={{ color: 'var(--ink)' }}>{x.km}</span></span>
+          </Photo>
+          <span className="col g8" style={{ padding: '12px 16px 16px' }}>
             <span className="wrap g6">
               <span className={'pl ' + x.libresCls}>{x.libresTxt}</span>
               {x.promo && <span className="pl f">-20% de día</span>}
@@ -38,15 +38,39 @@ export function Complejos({ vm, app }) {
   );
 }
 
+function Galeria({ c }) {
+  const ref = useRef(null);
+  const ir = (i) => {
+    c.setGal(i);
+    const el = ref.current;
+    if (el) el.scrollTo({ left: i * el.clientWidth, behavior: 'smooth' });
+  };
+  const onScroll = () => {
+    const el = ref.current;
+    if (!el) return;
+    const i = Math.round(el.scrollLeft / el.clientWidth);
+    if (i !== c.gal) c.setGal(i);
+  };
+  return (
+    <div style={{ position: 'relative', marginTop: 'calc(-1 * var(--top))' }}>
+      <div className="gal" ref={ref} onScroll={onScroll} aria-label={`fotos de ${c.nombre}`} tabIndex={0}>
+        {c.galeria.map((src, i) => <Photo key={src} src={src} h={240} veil="bottom" alt={`foto ${i + 1} de ${c.nombre}`} />)}
+      </div>
+      <div className="rb" style={{ position: 'absolute', left: 16, right: 16, bottom: 12 }}>
+        <span className="idx" style={{ color: 'var(--ink)' }}>{c.gal + 1}/{c.galeria.length} · deslizá</span>
+        <div className="galdots">{c.galeria.map((_, i) => <button key={i} className={i === c.gal ? 'on' : ''} aria-label={`ver foto ${i + 1}`} onClick={() => ir(i)} />)}</div>
+      </div>
+    </div>
+  );
+}
+
 export function ComplejoDetalle({ vm, app }) {
   const c = vm.cxd;
   if (!c) return null;
   return (
-    <div className="col" style={{ minHeight: '100%' }}>
-      <div className="ph col" style={{ height: 'calc(120px + var(--top))', marginTop: 'calc(-1 * var(--top))', padding: 'var(--top) 8px 12px', justifyContent: 'space-between' }}>
-        <button className="ib" style={{ alignSelf: 'flex-start' }} aria-label="volver" onClick={() => app.back()}><Icon name="back" /></button>
-        <span className="idx" style={{ paddingLeft: 12 }}>// foto · {c.nombre}</span>
-      </div>
+    <div className="col" style={{ minHeight: '100%', position: 'relative' }}>
+      <Galeria c={c} />
+      <button className="ib" style={{ position: 'absolute', top: 4, left: 8, background: 'rgba(28,28,75,.6)' }} aria-label="volver" onClick={() => app.back()}><Icon name="back" /></button>
       <div className="col g20" style={{ padding: '20px 20px 28px', flex: 1 }}>
         <div className="col g8">
           <h1 className="dk" style={{ fontSize: 46 }}>{c.nombreUp}</h1>

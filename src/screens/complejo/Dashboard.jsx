@@ -9,8 +9,9 @@ export default function Dashboard({ vm }) {
         <Marks />
       </div>
       <div className="col g8">
-        <h1 className="dk" style={{ fontSize: 52 }}>NORTH CHAMP</h1>
+        <h1 className="dk" style={{ fontSize: 52 }}>{d.nombreUp}</h1>
         <div className="wrap" style={{ alignItems: 'center' }}>
+          <span className="pl f">complejo verificado</span>
           <span className="pl l">complejo pionero</span>
           <span className="ley" style={{ fontSize: 13 }}>panel · hoy, miércoles 14</span>
         </div>

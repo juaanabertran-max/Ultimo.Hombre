@@ -132,3 +132,129 @@ export function Seg({ options, value, onChange, label }) {
     </div>
   );
 }
+
+/** Foto con el duotono ya aplicado y un velo navy para que el texto encima se lea. */
+export function Photo({ src, h = 160, veil = 'bottom', children, style, className = '', alt = '' }) {
+  return (
+    <div className={'photo ' + className} style={{ height: h, ...style }}>
+      <img src={src} alt={alt} loading="lazy" />
+      {veil && <span className={'veil ' + veil} aria-hidden="true" />}
+      {children && <div className="photo-in">{children}</div>}
+    </div>
+  );
+}
+
+/** Foto de perfil. Sin foto (o si todavía no corresponde verla) muestra la inicial o una silueta. */
+export function Avatar({ foto, ini, size = 40, oculta, ring }) {
+  const st = { width: size, height: size, borderColor: ring ? 'var(--accent)' : 'var(--line-2)' };
+  if (foto) return <img className="avatar" src={foto} alt="" style={st} />;
+  if (oculta) {
+    return (
+      <span className="avatar sil" style={st} aria-hidden="true">
+        <svg width={size * 0.6} height={size * 0.6} viewBox="0 0 24 24" fill="none" stroke="rgba(233,240,255,.55)" strokeWidth="1.6"><circle cx="12" cy="8" r="4" /><path d="M4 21c1-4 4-6 8-6s7 2 8 6" /></svg>
+      </span>
+    );
+  }
+  return <span className="avatar bx" style={{ ...st, fontSize: size * 0.4 }} aria-hidden="true">{ini}</span>;
+}
+
+/** Casilla de verificación: nunca viene tildada de antemano. */
+export function Check({ checked, onChange, children, sub, id }) {
+  return (
+    <label className="check" htmlFor={id}>
+      <input id={id} type="checkbox" checked={checked} onChange={onChange} />
+      <span className="box" aria-hidden="true">{checked && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1c1c4b" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>}</span>
+      <span className="col g2"><span className="ct">{children}</span>{sub && <span className="ley" style={{ fontSize: 12, lineHeight: '17px' }}>{sub}</span>}</span>
+    </label>
+  );
+}
+
+export function SwitchRow({ label, sub, on, onClick, id }) {
+  return (
+    <div className="rb" style={{ alignItems: 'flex-start', padding: '12px 0' }}>
+      <div className="col g2 min0"><span className="bx" style={{ fontSize: 15 }} id={id}>{label}</span>{sub && <span className="ley" style={{ fontSize: 12, lineHeight: '17px' }}>{sub}</span>}</div>
+      <button className={'sw' + (on ? ' on' : '')} role="switch" aria-checked={on} aria-labelledby={id} onClick={onClick}><span /></button>
+    </div>
+  );
+}
+
+export function Progress({ step, total, label }) {
+  return (
+    <div className="col g8">
+      <div className="prog" role="progressbar" aria-valuemin={1} aria-valuemax={total} aria-valuenow={step} aria-label={`paso ${step} de ${total}`}>
+        {Array.from({ length: total }, (_, i) => <span key={i} className={i < step ? 'on' : ''} />)}
+      </div>
+      <span className="idx">// paso {step} de {total} · {label}</span>
+    </div>
+  );
+}
+
+export function Field({ id, label, children, help }) {
+  return (
+    <div className="col g8">
+      <label className="lbl" htmlFor={id} style={{ margin: 0 }}>{label}</label>
+      {children}
+      {help && <span className="ley" style={{ fontSize: 12, lineHeight: '17px' }}>{help}</span>}
+    </div>
+  );
+}
+
+export function PassField({ id, value, onChange, ver, toggle, rules }) {
+  return (
+    <div className="col g10">
+      <Field id={id} label="contraseña">
+        <div className="wrap" style={{ flexWrap: 'nowrap', gap: 0 }}>
+          <input id={id} className="inp" type={ver ? 'text' : 'password'} value={value} onChange={onChange} autoComplete="new-password" style={{ borderRight: 0 }} />
+          <button className="ib" style={{ border: '1px solid var(--line-2)', minHeight: 50, padding: '0 14px' }} onClick={toggle} aria-label={ver ? 'ocultar contraseña' : 'mostrar contraseña'}><span className="idx">{ver ? 'ocultar' : 'ver'}</span></button>
+        </div>
+      </Field>
+      <ul className="rules" aria-live="polite">
+        {rules.map((r) => (
+          <li key={r.label} className={r.ok ? 'ok' : ''}>
+            <span className="tick" aria-hidden="true">{r.ok ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1c1c4b" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg> : null}</span>
+            {r.label}<span className="sr">{r.ok ? ' (cumplido)' : ' (falta)'}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/** Dato + código de 6 dígitos con reenviar. */
+export function CodeField({ id, label, type, value, onChange, valido, sent, code, onCode, ok, enviar, verificar, placeholder, help }) {
+  return (
+    <div className="col g10">
+      <Field id={id} label={label} help={help}>
+        <div className="wrap" style={{ flexWrap: 'nowrap' }}>
+          <input id={id} className="inp" type={type} value={value} onChange={onChange} placeholder={placeholder} disabled={ok} autoComplete={type === 'email' ? 'email' : 'tel'} />
+          {!ok && <button className="btn s sm" disabled={!valido} onClick={enviar}>{sent ? 'reenviar' : 'enviar código'}</button>}
+        </div>
+      </Field>
+      {sent && !ok && (
+        <div className="wrap" style={{ flexWrap: 'nowrap' }}>
+          <label className="sr" htmlFor={id + '-code'}>código de 6 números</label>
+          <input id={id + '-code'} className="inp code" inputMode="numeric" maxLength={6} value={code} onChange={onCode} placeholder="••••••" autoComplete="one-time-code" />
+          <button className="btn sm" onClick={verificar}>verificar</button>
+        </div>
+      )}
+      {ok && <span className="pl l"><Micro name="anillos" size={12} color="#bce04b" /> verificado</span>}
+    </div>
+  );
+}
+
+export function Kebab({ onClick, label }) {
+  return (
+    <button className="ib" aria-label={label} onClick={onClick}>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8" /><circle cx="12" cy="12" r="1.8" /><circle cx="19" cy="12" r="1.8" /></svg>
+    </button>
+  );
+}
+
+export function Wordmark({ size = 34 }) {
+  return (
+    <div className="col g10" style={{ alignItems: 'center' }}>
+      <Isologo width={size * 1.6} />
+      <span className="dk" style={{ fontSize: size, letterSpacing: '.01em', textAlign: 'center' }}>ÚLTIMO HOMBRE</span>
+    </div>
+  );
+}
