@@ -24,7 +24,7 @@ export function Checkout({ vm, app }) {
       </div>
       <div className="col">
         <div className="row ln"><span className="ley ink">turno</span><span style={{ fontSize: 15 }}>{c.precio}</span></div>
-        <div className="row ln"><span className="ley ink">cargo por servicio 6% · iva incluido</span><span style={{ fontSize: 15 }}>{c.fee}</span></div>
+        <div className="row ln"><div className="col g2"><span className="ley ink">cargo por servicio · iva incluido</span><span className="idx">{c.feeDet}</span></div><span style={{ fontSize: 15 }}>{c.fee}</span></div>
         <div className="row" style={{ borderTop: '1px solid var(--accent)' }}><span className="bx" style={{ fontSize: 16 }}>total</span><span className="bx" style={{ fontSize: 18 }}>{c.total}</span></div>
       </div>
       <div className="cd col g10" style={{ padding: 16 }}>

@@ -1,6 +1,6 @@
 // Acciones del lado jugador. Se mezclan en el componente App (this = App).
 import {
-  DAYS, CX, AMIGOS, JOINERS, IMG, key, price, fee, cupo, share, basePrice, joinY, hoursUntil,
+  DAYS, CX, AMIGOS, JOINERS, IMG, key, price, fee, conCargo, cupo, share, basePrice, joinY, hoursUntil,
 } from './data.js';
 
 export const actionsJugador = {
@@ -51,12 +51,12 @@ export const actionsJugador = {
     if (kind === 'reserva') {
       const t = S.fTipo, d = S.fDia;
       const p = price(S.promo, S.selCx, t, d, S.sel.h);
-      const tot = p + fee(p);
+      const tot = p + fee(p, t);
       monto = S.split ? share(tot, t) : tot;
       concepto = `reserva · ${CX[S.selCx].nombre} · ${DAYS[d].corto} ${S.sel.h} h${S.split ? ' · tu parte' : ' · turno completo'}`;
     } else {
       const f = S.feed.find((x) => x.id === S.sumFeed);
-      monto = share(basePrice(f.tipo, f.h) * 1.06, f.tipo);
+      monto = share(conCargo(basePrice(f.tipo, f.h), f.tipo), f.tipo);
       concepto = `tu parte · ${CX[f.cx].nombre} · ${DAYS[f.d].corto} ${f.h} h`;
       nota = f.auto ? '' : 'si el organizador no confirma tu lugar, te devolvemos todo automáticamente.';
     }
@@ -70,7 +70,7 @@ export const actionsJugador = {
   },
   finishReserva() {
     const S = this.state, t = S.fTipo, d = S.fDia, cx = S.selCx, k = S.sel.k, h = S.sel.h;
-    const p = price(S.promo, cx, t, d, h), total = p + fee(p), cp = cupo(t);
+    const p = price(S.promo, cx, t, d, h), total = p + fee(p, t), cp = cupo(t);
     const n = Math.min(S.nYa, cp);
     const yo = { n: S.perfil.alias, pos: S.perfil.pos || 'sin posición', est: 'pagó', yo: true, foto: S.perfil.foto, tel: S.perfil.tel };
     const jug = [yo];
@@ -89,7 +89,7 @@ export const actionsJugador = {
     for (let i = 1; i < ya; i++) jug.push({ ...AMIGOS[(i + 6) % AMIGOS.length], foto: null, est: i % 3 === 0 ? 'pendiente' : 'pagó' });
     jug.push({ n: S.perfil.alias, pos: S.perfil.pos || 'sin posición', est: f.auto ? 'pagó' : 'por confirmar', yo: true, nuevo: true, foto: S.perfil.foto, tel: S.perfil.tel });
     const mid = 'j' + f.id + Date.now();
-    const total = basePrice(f.tipo, f.h) * 1.06;
+    const total = conCargo(basePrice(f.tipo, f.h), f.tipo);
     const m = { id: mid, cx: f.cx, k: f.k, d: f.d, h: f.h, tipo: f.tipo, rol: 'jugador', cat: f.cat, total, pagado: share(total, f.tipo), split: true, torneo: f.torneo, pub: null, jug, feedId: f.id, org: f.org };
     const feed = S.feed.map((x) => (x.id === f.id ? { ...x, lugares: x.lugares - 1, joined: true } : x));
     this.setState({ matches: S.matches.concat([m]), feed, pay: null, selMatch: mid, screen: 'partido', hist: ['misPartidos'] });

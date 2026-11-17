@@ -2,7 +2,7 @@
 // textos calculados, listas y acciones. Las pantallas sólo dibujan.
 import {
   DAYS, HOURS, FRANJAS, CX, CX_ORDER, POS, PLURAL, NIVELES, CATEGORIAS, ZONAS, IMG,
-  money, key, cancha, basePrice, promoOn, price, fee, cupo, share, joinY, hoursUntil, conductaTxt,
+  money, key, cancha, basePrice, promoOn, price, fee, feeUno, conCargo, cupo, share, joinY, hoursUntil, conductaTxt,
 } from './data.js';
 
 const EST_LABEL = { 'pagó': 'pagó', confirmado: 'confirmado', pendiente: 'pago pendiente', 'por confirmar': 'por confirmar' };
@@ -89,7 +89,7 @@ export function buildView(app) {
   // ---------- feed (home, buscar, sumarme, aviso)
   const feedView = (f) => {
     const cx = CX[f.cx];
-    const sh = share(basePrice(f.tipo, f.h) * 1.06, f.tipo);
+    const sh = share(conCargo(basePrice(f.tipo, f.h), f.tipo), f.tipo);
     const cuando = `${DAYS[f.d].largo} · ${f.h} h`;
     const por = [S.priv.ubic ? `cerca tuyo (${cx.km})` : `en tu zona (${P.zona})`];
     if (f.torneo) por.push('es un torneo de la zona');
@@ -188,7 +188,7 @@ export function buildView(app) {
   let co = null;
   if (S.selCx && S.sel) {
     const p = price(S.promo, S.selCx, t, d, S.sel.h);
-    const f = fee(p);
+    const f = fee(p, t);
     const total = p + f;
     const cp = cupo(t);
     const sh = share(total, t);
@@ -197,6 +197,7 @@ export function buildView(app) {
       cuando: `${DAYS[d].largo} · ${S.sel.h} h`,
       donde: `${CX[S.selCx].nombre} · cancha ${S.sel.k} · fútbol ${t}`,
       precio: money(p), fee: money(f), total: money(total),
+      feeDet: `1,5% del turno por jugador: ${money(feeUno(p))} x ${cupo(t)}`,
       nYa: Math.min(S.nYa, cp), cupo: cp, split: S.split,
       splitTxt: S.split
         ? `cada uno paga ${money(sh)} desde la app (cargo por servicio incluido). vos pagás tu parte ahora y ves quién pagó y quién no.`

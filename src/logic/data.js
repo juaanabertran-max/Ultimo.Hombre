@@ -104,8 +104,12 @@ export const price = (promo, cx, tipo, d, h) => {
   const p = basePrice(tipo, h);
   return promoOn(promo, cx, d, h) ? Math.round(p * 0.8) : p;
 };
-/** Cargo por servicio al jugador: 6%, IVA incluido. Siempre visible antes de pagar. */
-export const fee = (p) => Math.round(p * 0.06);
+/** Cargo por servicio: cada jugador paga el 1,5% del valor del turno, IVA incluido ($900 en un turno de $60.000).
+ *  feeUno = cargo de un jugador; fee = cargo de todo el turno (feeUno x cantidad de jugadores). Siempre visible antes de pagar. */
+export const FEE_RATE = 0.015;
+export const feeUno = (p) => Math.round(p * FEE_RATE);
+export const fee = (p, tipo = 5) => feeUno(p) * cupo(tipo);
+export const conCargo = (p, tipo = 5) => p + fee(p, tipo);
 export const cupo = (tipo) => (tipo === 5 ? 10 : 14);
 export const share = (total, tipo) => Math.ceil(total / cupo(tipo) / 10) * 10;
 export const joinY = (list) => (list.length < 2 ? list.join('') : list.slice(0, -1).join(', ') + ' y ' + list[list.length - 1]);
@@ -154,7 +158,7 @@ function facuMatches() {
   const est = ['pagó', 'pagó', 'pagó', 'pendiente', 'pagó', 'pendiente', 'pendiente'];
   const jug = [{ n: 'Facu', pos: 'mediocampista', est: 'pagó', yo: true, foto: IMG('av-facu'), tel: '11 5555-0100' }]
     .concat(AMIGOS.slice(0, 7).map((a, i) => ({ ...a, est: est[i] })));
-  return [{ id: 'm1', cx: 'north', k: 2, d: 1, h: 21, tipo: 5, rol: 'org', cat: 'masculino', total: 63600, pagado: 6360, split: true, torneo: null, pub: null, jug }];
+  return [{ id: 'm1', cx: 'north', k: 2, d: 1, h: 21, tipo: 5, rol: 'org', cat: 'masculino', total: 69000, pagado: 6900, split: true, torneo: null, pub: null, jug }];
 }
 
 export function facuData() {

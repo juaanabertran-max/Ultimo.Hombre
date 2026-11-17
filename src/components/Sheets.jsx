@@ -140,7 +140,7 @@ export default function Sheets({ app, vm }) {
         ],
         terminos: [
           'tenés que ser mayor de 18 para usar la app.',
-          'el cargo por servicio (6%, iva incluido) se ve siempre antes de pagar.',
+          'el cargo por servicio (1,5% del turno por jugador, iva incluido) se ve siempre antes de pagar.',
           'si cancelás con más de 6 h de anticipación, no afecta tu reputación.',
           'las calificaciones son sobre conducta, nunca sobre habilidad.',
         ],
